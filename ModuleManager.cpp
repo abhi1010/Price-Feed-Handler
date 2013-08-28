@@ -138,7 +138,7 @@ void ModuleManager::destroy ()
         return;
     }
     
-    std::cout << "[ModuleManager] Destroying all " << mImpl->mModules.size() << " modules " << std::endl;
+    std::cout << "[ModuleManager] Destroying all " << mImpl->mInitModules.size() << " modules " << std::endl;
 
     ModuleGroupMap::iterator itG  = mImpl->mModules.begin ();
     ModuleGroupMap::iterator endG = mImpl->mModules.end ();
@@ -168,6 +168,7 @@ void ModuleManager::destroy ()
         }
         else
         {
+            BLOG ("[ModuleManager] destroy module:");
             std::cout << "[ModuleManager] destroy module: " << 
                         initModule->getName().c_str() << std::endl;
         }

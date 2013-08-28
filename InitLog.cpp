@@ -27,6 +27,7 @@ public:
         mLog->initialize();
 
         addModule (mLog, "Log");
+        std::cout << "LogModule::End\n";
     }
 
     void destroy ()

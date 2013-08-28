@@ -2,6 +2,20 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <boost/log/utility/setup/console.hpp>
+
+
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+
+
+#include <boost/log/attributes/timer.hpp>
+#include <boost/log/attributes/named_scope.hpp>
+
+#include <boost/log/support/date_time.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/barrier.hpp>
+
 using boost::shared_ptr;
 
 Log::Log()
@@ -40,6 +54,14 @@ bool Log::initialize()
         > sink_t;
 */
 
+
+        boost::log::add_console_log(std::clog, keywords::format = expr::stream
+            << expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%H:%M:%S.%f")
+            << " --> " << expr::message );
+
+
+
+
         boost::shared_ptr< sink_t_h > asyncSink (new sink_t_h(
                                             boost::make_shared< backend_t_h >(),
             // We'll apply record ordering to ensure that records from different threads go sequentially in the file
@@ -51,8 +73,9 @@ bool Log::initialize()
 
         mSink->set_formatter
         (
-            expr::format("%1%- [%2%]")
+            expr::format("%1%:[%2%] %3%")
                 % expr::attr< boost::posix_time::ptime >("TimeStamp")
+                % expr::attr< boost::thread::id >("ThreadID")
                 % expr::smessage
         );
 
@@ -69,7 +92,7 @@ bool Log::initialize()
         //logging::core::get()->add_global_attribute("RecordID", attrs::counter< unsigned int >());
 
             // Here we go. First, identfy the thread.
-        //BOOST_LOG_SCOPED_THREAD_TAG("ThreadID", boost::thread::id, boost::this_thread::get_id());
+        logging::core::get()->add_global_attribute("ThreadID", attrs::current_thread_id());
 
         // Now, do some logging
         BLOG ("Log record Log.cpp");
