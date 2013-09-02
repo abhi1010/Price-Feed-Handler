@@ -3,6 +3,7 @@
 #include "LineHandler.h"
 #include <boost/asio.hpp>
 #include "boost/bind.hpp"
+#include "Log.h"
 
 #define MAX_DATA_LEN 64000
 

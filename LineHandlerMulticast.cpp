@@ -113,7 +113,10 @@ void LineHandlerMulticast::handle_receive_from(const boost::system::error_code& 
                 boost::bind(&LineHandlerMulticast::handle_receive_from, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
     }
 
-    else { std::cout << "######################################################################\n"; }
+    else
+    {
+        BLOG ("######################################################################");
+    }
 }
 
 // ########################## LINEHANDLER Functions

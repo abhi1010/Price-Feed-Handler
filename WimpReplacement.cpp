@@ -1,8 +1,10 @@
 #include "WimpReplacement.h"
 
+/*
 #include <boost/thread/thread.hpp>
 #include <boost/lockfree/queue.hpp>
 #include <boost/atomic.hpp>
+*/
 WimpReplacement::WimpReplacement(void)
 {
 }
@@ -22,7 +24,7 @@ void WimpReplacement::test()
 
     if (true)
     {
-        std::cout << "String PUBLISHER........... " << std::endl;
+        BLOG ( "String PUBLISHER........... "  );
 
         StringSubscriber subscriber1("String_Subscriber_1");
         StringSubscriber subscriber2("String_Subscriber_2");
@@ -49,13 +51,13 @@ void WimpReplacement::test()
         RingBufferQueue<std::string>* ringBufferQ = new RingBufferQueue<std::string>();
         std::string* s1 = new std::string ("abhi");
         std::string* s2 = NULL;
-        std::cout << "Added: " << s1 << "; or value=" << *s1 << endl;
+        BLOG ( "Added: " << s1 << "; or value=" << *s1 );
         ringBufferQ->push (s1);
 
         bool success = false;
         s2 = ringBufferQ->pop (success);
 
-        cout << "Got value: " << s2 << "; value=" << *s2 << "; success=" << success << endl;
+        BLOG ( "Got value: " << s2 << "; value=" << *s2 << "; success=" << success ) ;
     }
 
     if (false)
@@ -63,20 +65,18 @@ void WimpReplacement::test()
         QueueLockFree<std::string>* mWimpQueue = lockQueue;
         using namespace std;
         std::string* s2 = new std::string("abhi");
-        cout << "QueueLockFree:: Enqueueing data.......\n";
+        BLOG ( "QueueLockFree:: Enqueueing data.......") ;
         while (!mWimpQueue->push(s2));
 
-        cout << "QueueLockFree:: Enqueued data....... memlocation=" << s2 << endl;
+        BLOG ( "QueueLockFree:: Enqueued data....... memlocation=" << s2  );
 
         std::string* dd = NULL;
 
         bool success = false;
 
         dd  = mWimpQueue->pop(success);
-        {
-            //cout << "Popped...... " << dd << endl;
-            cout << "QueueLockFree:: Got value: " << dd << "; value=" << *dd << "; success=" << success << endl;
-        }
+            //BLOG ( "Popped...... " << dd  );
+            BLOG ( "QueueLockFree:: Got value: " << dd << "; value=" << *dd << "; success=" << success  );
     }
     if (true)
     {
@@ -84,15 +84,15 @@ void WimpReplacement::test()
 
         using namespace std;
         std::string* s2 = new std::string("abhi");
-        cout << "lockfree:: Enqueueing data.......\n";
+        BLOG ( "lockfree:: Enqueueing data.......") ;
         while (!bLock->push(s2));
 
-        cout << "lockfree:: Enqueued data....... memlocation=" << s2 << endl;
+        BLOG ( "lockfree:: Enqueued data....... memlocation=" << s2  );
 
         std::string* dd = new std::string("abhi");
         while (bLock->pop(dd))
         {
-            cout << "lockfree:: Popped...... " << dd << endl;
+            BLOG ( "lockfree:: Popped...... " << dd  );
         }
     }
     /*
@@ -113,7 +113,7 @@ void WimpReplacement::test()
 
 
     /*
-       std::cout << "String PUBLISHER........... " << std::endl;
+       BLOG ( "String PUBLISHER........... "  );
        StringSubscriber subscriber1("String_Subscriber_1");
        StringSubscriber subscriber2("String_Subscriber_2");
        StringPublisher publisher("Publisher_Of_String");

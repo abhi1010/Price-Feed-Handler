@@ -15,6 +15,8 @@
 #include <boost/atomic.hpp>
 #include "WimpQueue.h"
 
+#include "Log.h"
+
 using std::string;
 using std::endl;
 using std::cout;
@@ -45,7 +47,7 @@ public:
 
     virtual void onData (const std::string&   source, T& data)
     {
-        cout << "InterfaceSubscriber::onData::BASE SHOULD BE IGNORED\n";
+        BLOG ( "InterfaceSubscriber::onData::BASE SHOULD BE IGNORED") ;
     }
     virtual ~InterfaceSubscriber() {}
 protected:
@@ -58,7 +60,7 @@ class InterfacePublisher
 public:
     InterfacePublisher(const std::string& publisherName, WimpQueue<T>* wimpQ)
         : mPublisherName         (publisherName)
-        , mSignalArgs            ()
+        //, mSignalArgs            ()
         , mWimpQueue             (wimpQ)
         , mPublisher_threads     ()
     {
@@ -73,10 +75,10 @@ public:
     {
         if (mWimpQueue)
         {
-            cout << "Enqueueing data.......\n";
+            BLOG ( "Enqueueing data.......") ;
             while (!mWimpQueue->push(data));
 
-            cout << "Enqueued data....... memlocation=" << data << "; data=" << *data << endl;
+            BLOG ( "Enqueued data....... memlocation=" << data << "; data=" << *data  );
         }
         else
         {
@@ -85,22 +87,23 @@ public:
     }
     void thread_run_publish()
     {
-        cout << "thread_run_publish. 1. \n";
+        BLOG ( "thread_run_publish. 1." );
         if (mWimpQueue)
         {
             T* data = new T();
-            cout << "thread_run_publish. 2. \n";
+            //BLOG ( "thread_run_publish. 2. ") ;
             bool gotData = false;
             while(!false)
             {
-                //cout << "thread_run_publish. 3. MemADDRESS= " << data << endl;
+                //BLOG ( "thread_run_publish. 3. MemADDRESS= " << data  );
                 data = mWimpQueue->pop(gotData);
                 if (gotData && data)
                 {
                     mSignalArgs(mPublisherName, *data);
+                    BLOG ( "thread_run_publish. 5. ") ;
                 }
 
-                cout << "thread_run_publish. 5. \n";
+                //BLOG ( "thread_run_publish. 5. ") ;
             }
         }
     }
@@ -117,7 +120,7 @@ public:
             return;
         mWimpQueue = wimpQueue;
         // if Async, create a new thread
-        cout << "setWimpQueue. Creating new thread \n";
+        BLOG ( "setWimpQueue. Creating new thread " );
         mPublisher_threads.create_thread(std::bind (&InterfacePublisher::thread_run_publish, std::ref(*this)));
     }
 protected:
@@ -136,7 +139,7 @@ public:
     MessageHandlerSubscriber (const std::string& subscName) : InterfaceSubscriber(subscName) {}
     void onData (const std::string&   source, LineData&        data) override
     {
-        cout << mName << ":[" << source << "]Received Data of value: " << data.getSeqNum() << endl;
+        BLOG ( mName << ":[" << source << "]Received Data of value: " << data.getSeqNum()  );
     }
 };
 
@@ -156,7 +159,7 @@ public:
     StringSubscriber (const std::string& subscName) : InterfaceSubscriber<std::string>(subscName) {}
     void onData (const std::string&   source, std::string&        data) override
     {
-        cout << mName << ":[" << source << "]Received string of value: " << data << endl;
+        BLOG ( mName << ":[" << source << "]Received string of value: " << data  );
     }
 };
 
@@ -196,7 +199,7 @@ public:
     _Delete_SimpleDataSubscriber (const std::string& subscName) : InterfaceSubscriber<std::string>(subscName) {}
     void onData (const std::string&   source, T&        data) override
     {
-        //cout << mName << ":[" << source << "]Received value: " << data << endl;
+        //BLOG ( mName << ":[" << source << "]Received value: " << data  );
     }
 };
 */
