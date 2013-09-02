@@ -3,7 +3,7 @@
 
 
 LineHandler::LineHandler(const std::string& str)
-    : InterfacePublisher    (str, false)
+    : LockFreePublisher     (str)
     , mName                 (str)
     , mShuttingDown         (false)
 {

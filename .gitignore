@@ -16,3 +16,9 @@
 *.out
 *.app
 /.project
+
+
+#LOG files
+*.log
+*.txt
+

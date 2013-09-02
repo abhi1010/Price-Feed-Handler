@@ -19,7 +19,7 @@ enum class LineStatus
 }; // LineStatus
 
 
-class LineHandler : public InterfacePublisher<LineData>
+class LineHandler : public LockFreePublisher<LineData>
 {
 public:
     LineHandler(const std::string& str);
