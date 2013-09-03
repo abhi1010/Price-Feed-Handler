@@ -65,8 +65,8 @@ T*   QueueLockFree<T>::pop(bool& success)
 {
     //BLOG ( "QueueLockFree::Popping item.... "  );
     T * dd = new T;
-    success = mQueue.pop(dd);
-
+    while (!mQueue.pop(dd));
+    success = true;
     //BLOG ( "QueueLockFree::pop() : data= " << dd << ";value=" << *dd << "; found=" << success  );
     return dd;
 }

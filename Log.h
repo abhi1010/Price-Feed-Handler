@@ -36,7 +36,8 @@ namespace keywords = boost::log::keywords;
 using boost::shared_ptr;
 
 #define BLOG(E) BOOST_LOG(test_lg::get()) << E;
-BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(test_lg, src::logger_mt)
+
+BOOST_LOG_INLINE_GLOBAL_LOGGER_DEFAULT(test_lg, boost::log::sources::logger_mt)
 
 class Log
 {

@@ -7,7 +7,7 @@ class initLogModule : public InitModuleInternal
 {
 public:
     initLogModule ()
-        : InitModuleInternal    ("LogModule", 200)
+        : InitModuleInternal    ("LogModule", 1)
         , mLog                  (nullptr)
     {
         

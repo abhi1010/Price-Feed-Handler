@@ -2,14 +2,23 @@
 
 #include <iostream>
 #include <stdint.h>
+#include "DateTime.h"
 
 typedef unsigned long ulong;
 
 class LineData
 {
 public:
-    LineData(void);
+    LineData();
+    LineData(const char* moveableBuffer, ulong size, boost::local_time::local_date_time localTime);
+
     virtual ~LineData(void);
+    friend std::ostream& operator<< (std::ostream& stream, const LineData& lineData)
+    {
+    	return stream << "LineData: ReceivedTime" ;
+    }
+
+
 
     /** Get the next sequence number. */
     virtual ulong  getNextSeqNum() const { return (getSeqNum() + 1); }
@@ -37,10 +46,16 @@ public:
     /** Update the length of the raw data. */
     virtual void  setDataLen (ulong  len);
 
+    boost::local_time::local_date_time getLineTime() const
+    {
+    	return mLineTime;
+    }
+
 private: 
     const char* mData;
     ulong       mSeqNum;
     ulong       mDataLength;
+    boost::local_time::local_date_time mLineTime;
 };
 
 

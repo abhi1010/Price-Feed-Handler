@@ -1,14 +1,22 @@
 #include "LineData.h"
 
-
-LineData::LineData(void)
-    : mData         (NULL)
-    , mSeqNum       (0)
+LineData::LineData()
+	: mData         (NULL)
+	, mSeqNum       (0)
+	, mDataLength	(0)
+	, mLineTime		(boost::date_time::special_values::min_date_time)
 {
 }
 
+LineData::LineData(const char* buffer, ulong len, boost::local_time::local_date_time localTime)
+    : mData         (buffer)
+    , mSeqNum       (0)
+	, mDataLength	(len)
+	, mLineTime		(localTime)
+{
+}
 
-LineData::~LineData(void)
+LineData::~LineData()
 {
 }
 
@@ -17,7 +25,6 @@ ulong LineData::getSeqNum   () const
 {
     return mSeqNum;
 }
-
 
 /** Get the begining of the raw data. */
 const char* LineData::getData     () const
@@ -31,7 +38,6 @@ ulong LineData::getDataLen  () const
     return mDataLength;
 }
 
-
 /** Update the sequence number. */
 void LineData::setSeqNum (ulong  seqNum)
 {
@@ -43,6 +49,8 @@ void LineData::setSeqNum (ulong  seqNum)
 void LineData::clear ()
 {
     mData = NULL;
+    mDataLength = 0;
+    mSeqNum = 0;
 }
 
 /** Update the location and length of the raw data. */

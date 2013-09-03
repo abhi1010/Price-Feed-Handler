@@ -40,10 +40,12 @@ bool Log::initialize()
         if (!strm->good())
             throw std::runtime_error("Failed to open a text log file");
 
+        /*
         // Enable putting the output on console
         boost::log::add_console_log(std::clog, keywords::format = expr::stream
             << expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%H:%M:%S.%f")
             << " --> " << expr::message );
+        */
 
         boost::shared_ptr< sink_t_h > asyncSink (new sink_t_h(
                                             boost::make_shared< backend_t_h >(),

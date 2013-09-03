@@ -1,9 +1,13 @@
 #include "LineHandlerMulticast.h"
 #include "Log.h"
+#include "DateTime.h"
+#include <boost/move/move.hpp>
 
 #include <string>
 #include <sstream>
 #include <iostream>
+
+using namespace std;
 
 // the third parameter of from_string() should be
 // one of std::hex, std::dec or std::oct
@@ -49,7 +53,7 @@ void LineHandlerMulticast::connect()
 
     mSocket.async_receive_from(
         boost::asio::buffer(mReceivedDataBuffer, MAX_DATA_LEN), mSenderEndpoint,
-        boost::bind(&LineHandlerMulticast::handle_receive_from, this,
+        boost::bind(&LineHandlerMulticast::handleReceiveData, this,
         boost::asio::placeholders::error,
         boost::asio::placeholders::bytes_transferred));
 
@@ -63,60 +67,76 @@ void LineHandlerMulticast::stopService()
 {
     mIoService.stop();
 }
-
-void LineHandlerMulticast::handle_receive_from(const boost::system::error_code& error,
+void LineHandlerMulticast::handleReceiveData(const boost::system::error_code& error,
     size_t bytes_recvd)
 {
-    static const string FUNC_NAME = "handle_receive_from::";
-    BLOG (FUNC_NAME);
-    struct timespec recvTime;
-    struct timespec realTime;
-
+	//static const string FUNC_NAME = "handleReceiveData2";
     if (!error && !mShuttingDown)
     {
-        BLOG (FUNC_NAME << "Received Data:" << mReceivedDataBuffer << "; Bytes Received=" <<  bytes_recvd );
+        // TODO: Get the time as the first thing - boost date time
+        boost::local_time::local_date_time now = DateTime::now();
 
-        static int numRecv = 0;
-        static long totalTime = 0;
-        clock_gettime(CLOCK_MONOTONIC_RAW, &recvTime);
+        cout << "Time.Now=" << now << endl;
 
-        std::stringstream ss;
-        ss << mReceivedDataBuffer;
-        std::string sendStr = ss.str();
-        long sendTvSec, sendTvNsec;
-        std::size_t indexTimeSeparator = sendStr.find(":");
-        std::size_t indexMsgSeparator = sendStr.find("|");
-        std::string sendStrTvSec, sendStrTvNsec;
-        if (indexTimeSeparator != std::string::npos)
-        {
-            ++numRecv;
-            sendStrTvSec = sendStr.substr (0, indexTimeSeparator);
-            sendStrTvNsec = sendStr.substr (indexTimeSeparator + 1, indexMsgSeparator - indexTimeSeparator);
-            BLOG (FUNC_NAME << "indexTimeSeparator is pos " << indexTimeSeparator<< " ,indexMsgSeparator is pos " << indexMsgSeparator );
-            from_string (sendTvSec, sendStrTvSec, std::dec);
-            from_string (sendTvNsec, sendStrTvNsec, std::dec);
-            BLOG (FUNC_NAME << "Send Time was "<< sendStrTvSec << ":" << sendStrTvNsec );
-            BLOG (FUNC_NAME << "Receive Time was " << recvTime.tv_sec << ":" << recvTime.tv_nsec );
-            if (recvTime.tv_sec - sendTvSec == 0)
-            {
-                totalTime += recvTime.tv_nsec - sendTvNsec;
-                BLOG (FUNC_NAME << "Time taken was "<<recvTime.tv_nsec - sendTvNsec<<" Made of receive time:"
-                    << recvTime.tv_nsec << " and sendTime:" << sendTvNsec );
-            }
-            else
-            {
-                BLOG (FUNC_NAME << "Time taken was "<< (recvTime.tv_nsec+1E9) - sendTvNsec );
-            }
-        }
-
+        LineData * lineData = new LineData(std::move(mReceivedDataBuffer), bytes_recvd, std::move(now));
+        //LineData * lineData = new LineData((mReceivedDataBuffer), bytes_recvd, (now));
+        printDataDetails (lineData);
+        publish(lineData);
         mSocket.async_receive_from ( boost::asio::buffer(mReceivedDataBuffer, MAX_DATA_LEN), mSenderEndpoint,
-                boost::bind(&LineHandlerMulticast::handle_receive_from, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                boost::bind(&LineHandlerMulticast::handleReceiveData, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
     }
-
     else
     {
         BLOG ("######################################################################");
     }
+}
+
+void LineHandlerMulticast::printDataDetails (LineData * lineData)
+{
+
+    struct timespec recvTime;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &recvTime);
+
+    //LineData* data = new LineData (std::move(mReceivedDataBuffer));
+    static const string FUNC_NAME = "printDataDetails::";
+    BLOG (FUNC_NAME << "Entry");
+    struct timespec realTime;
+
+    BLOG (FUNC_NAME << "Received Data:" << lineData->getData() << "; Bytes Received=" <<  lineData->getDataLen() );
+    BLOG (FUNC_NAME << "Time Received=" << lineData->getLineTime());
+
+    static int numRecv = 0;
+    static long totalTime = 0;
+
+    std::stringstream ss;
+    ss << lineData->getData();
+    std::string sendStr = ss.str();
+    long sendTvSec, sendTvNsec;
+    std::size_t indexTimeSeparator = sendStr.find(":");
+    std::size_t indexMsgSeparator = sendStr.find("|");
+    std::string sendStrTvSec, sendStrTvNsec;
+    if (indexTimeSeparator != std::string::npos)
+    {
+        ++numRecv;
+        sendStrTvSec = sendStr.substr (0, indexTimeSeparator);
+        sendStrTvNsec = sendStr.substr (indexTimeSeparator + 1, indexMsgSeparator - indexTimeSeparator);
+        BLOG (FUNC_NAME << "indexTimeSeparator is pos " << indexTimeSeparator<< " ,indexMsgSeparator is pos " << indexMsgSeparator );
+        from_string (sendTvSec, sendStrTvSec, std::dec);
+        from_string (sendTvNsec, sendStrTvNsec, std::dec);
+        BLOG (FUNC_NAME << "Send Time was "<< sendStrTvSec << ":" << sendStrTvNsec );
+        BLOG (FUNC_NAME << "Receive Time was " << recvTime.tv_sec << ":" << recvTime.tv_nsec );
+        if (recvTime.tv_sec - sendTvSec == 0)
+        {
+            totalTime += recvTime.tv_nsec - sendTvNsec;
+            BLOG (FUNC_NAME << "Time taken was "<<recvTime.tv_nsec - sendTvNsec<<" Made of receive time:"
+                    << recvTime.tv_nsec << " and sendTime:" << sendTvNsec );
+        }
+        else
+        {
+            BLOG (FUNC_NAME << "Time taken was "<< (recvTime.tv_nsec+1E9) - sendTvNsec );
+        }
+    }
+
 }
 
 // ########################## LINEHANDLER Functions

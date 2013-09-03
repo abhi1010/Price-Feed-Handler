@@ -90,7 +90,7 @@ public:
         BLOG ( "thread_run_publish. 1." );
         if (mWimpQueue)
         {
-            T* data = new T();
+            T* data = NULL;
             //BLOG ( "thread_run_publish. 2. ") ;
             bool gotData = false;
             while(!false)
@@ -101,6 +101,7 @@ public:
                 {
                     mSignalArgs(mPublisherName, *data);
                     BLOG ( "thread_run_publish. 5. ") ;
+                    delete data;
                 }
 
                 //BLOG ( "thread_run_publish. 5. ") ;

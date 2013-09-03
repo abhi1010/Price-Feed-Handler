@@ -12,6 +12,7 @@ BOOSTFLAGS=-I /home/apandey/boost_1_54_0 -L /home/apandey/Downloads/boost_1_54_0
 BOOSTFLAGS+= -I/usr/include/python3.2 -I/usr/local/include/boost/python 
 BOOSTFLAGS+= -I/usr/include/python2.7 -L/usr/lib/python2.7 -L/usr/lib/python3.2
 CPPFLAGS+= -I/usr/include/x86_64-linux-gnu/c++/4.8
+CPPFLAGS+= -DBOOST_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
 #CPPFLAGS+= -I/usr/include/x86_64-linux-gnu/c++/4.8 -I /usr/include -I /usr/lib/gcc/x86_64-linux-gnu/4.8/include/
 BOOSTFLAGS+= -L/usr/lib 
 
@@ -20,12 +21,12 @@ BOOSTLIBS=-lboost_chrono -lboost_date_time -lboost_filesystem -lboost_graph -lbo
 ### FILES
 SOURCES = $(wildcard *.cpp)
 OBJECTS = $(patsubst %.cpp,%.o,$(wildcard *.cpp))
-TARGET = mods.out
+TARGET = fh.out
 
 g: CXX='/usr/bin/g++' -pipe
 c: CXX='/home/dev/clang_3.2/bin/clang++'
 
-all: g c
+all: g
 
 c: $(OBJECTS)
 	$(CC_CLANG) $(GPPFLAGS) $(CPPFLAGS) $(OBJECTS) $(LFLAGS) $(BOOSTLIBS) $(BOOSTFLAGS) -o $(TARGET)
@@ -38,7 +39,7 @@ depend:
 	@makedepend -Y -m $(SOURCES) 2> /dev/null
 
 clean:
-	@rm -f *.o *.bak mods.out *~ *%
+	@rm -f *.o *.bak fh.out *~ *%
 
 ##### End of Makefile
 # DO NOT DELETE

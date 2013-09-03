@@ -15,9 +15,8 @@ public:
                             const std::string& multicast_address);
 
     virtual ~LineHandlerMulticast();
-    
-    void handle_receive_from(const boost::system::error_code& error, size_t bytes_recvd);
-
+    void handleReceiveData(const boost::system::error_code& error, size_t bytes_recvd);
+    void printDataDetails (LineData * lineData);
 
     // ################### Functions from LineHandler
     
@@ -47,7 +46,6 @@ public:
         const string&           reason,
         LineStatus  status = LineStatus::DOWN,
         bool                    isError = true) {}
-
 
 private:
     boost::asio::io_service mIoService;
