@@ -27,10 +27,11 @@ public:
     virtual ~LineHandler();
 
     void setShuttingDown();
+    /*
     inline bool isShuttingDown() const
     {
         return mShuttingDown;
-    }
+    }*/
 
     /** terminate() ends all LineHandler activity. */
     virtual void       terminate () = 0;

@@ -89,7 +89,7 @@ void ModuleManager::init (const ConfigManager& cfgManager)
     InitModuleMap::iterator it  = mImpl->mInitModules.begin ();
     InitModuleMap::iterator end = mImpl->mInitModules.end   ();
 
-    //Log::print (Log::INIT, "[ModuleManager] %s", "Initializing all modules");
+    BLOG ( "[ModuleManager] Initializing all modules");
 
     try
     {
@@ -97,7 +97,7 @@ void ModuleManager::init (const ConfigManager& cfgManager)
         {
             InitModule* initModule = it->second;
             
-            //Log::print(Log::DEBUG, "[ModuleManager] Initializing module %s", initModule->getName().c_str());
+            BLOG ("[ModuleManager] Initializing module " << initModule->getName().c_str());
 
             if (!dynamic_cast<InitModuleInternal*> (initModule))
             {
@@ -138,7 +138,7 @@ void ModuleManager::destroy ()
         return;
     }
     
-    std::cout << "[ModuleManager] Destroying all " << mImpl->mInitModules.size() << " modules " << std::endl;
+    BLOG ( "[ModuleManager] Destroying all " << mImpl->mInitModules.size() << " modules " );
 
     ModuleGroupMap::iterator itG  = mImpl->mModules.begin ();
     ModuleGroupMap::iterator endG = mImpl->mModules.end ();
@@ -168,9 +168,7 @@ void ModuleManager::destroy ()
         }
         else
         {
-            BLOG ("[ModuleManager] destroy module:");
-            std::cout << "[ModuleManager] destroy module: " << 
-                        initModule->getName().c_str() << std::endl;
+            BLOG ("[ModuleManager] destroy module: " << initModule->getName().c_str() );
         }
 
         initModule->destroy ();

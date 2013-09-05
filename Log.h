@@ -55,7 +55,10 @@ typedef sinks::asynchronous_sink<
     >
 > sink_t_h;
 
+typedef sinks::synchronous_sink< sinks::text_ostream_backend > text_sink;
+
 private:
     boost::shared_ptr< sink_t_h > mSink;
+    //boost::shared_ptr< text_sink > pSink;
 };
 #endif // LogCppH__

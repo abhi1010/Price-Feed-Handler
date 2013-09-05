@@ -5,15 +5,16 @@
 LineHandler::LineHandler(const std::string& str)
     : LockFreePublisher     (str)
     , mName                 (str)
-    , mShuttingDown         (false)
+    //, mShuttingDown         (false)
 {
 }
-
+/*
 void LineHandler::setShuttingDown()
 {
+
     mShuttingDown = true;
 }
-
+*/
 LineHandler::~LineHandler(void)
 {
 }

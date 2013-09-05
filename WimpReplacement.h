@@ -63,6 +63,7 @@ public:
         //, mSignalArgs            ()
         , mWimpQueue             (wimpQ)
         , mPublisher_threads     ()
+		, mShuttingDown			 (false)
     {
         setWimpQueue (mWimpQueue);
     }
@@ -93,7 +94,7 @@ public:
             T* data = NULL;
             //BLOG ( "thread_run_publish. 2. ") ;
             bool gotData = false;
-            while(!false)
+            while(!mShuttingDown)
             {
                 //BLOG ( "thread_run_publish. 3. MemADDRESS= " << data  );
                 data = mWimpQueue->pop(gotData);
@@ -101,19 +102,26 @@ public:
                 {
                     mSignalArgs(mPublisherName, *data);
                     BLOG ( "thread_run_publish. 5. ") ;
-                    delete data;
+                    if (data && !mShuttingDown)
+                    	delete data;
                 }
 
                 //BLOG ( "thread_run_publish. 5. ") ;
             }
         }
+        BLOG ( "thread_run_publish. Time to EXIT. ") ;
     }
     
     void addSubscription (InterfaceSubscriber<T>* subsc)
     {
         mSignalArgs.connect( std::bind (&InterfaceSubscriber<T>::onData , std::ref(*subsc), std::placeholders::_1, std::placeholders::_2));
     }
+    void startShutDown()
+    {
+    	BLOG ("InterfacePublisher:: Shutting down........ ");
+    	mShuttingDown = true;
 
+    }
 public:
     void setWimpQueue           (WimpQueue<T>* wimpQueue)
     {
@@ -129,6 +137,7 @@ protected:
     const std::string           mPublisherName;
     WimpQueue<T>*               mWimpQueue;
     boost::thread_group         mPublisher_threads;
+    bool						mShuttingDown;
 };
 
 // ################################################### SAMPLE CLASSES THAT CAN ACT LIKE MH AND LH ###################################################

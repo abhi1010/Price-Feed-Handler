@@ -32,7 +32,6 @@ LineHandlerMulticast::LineHandlerMulticast(const std::string& strName,
 
 LineHandlerMulticast::~LineHandlerMulticast(void)
 {
-    setShuttingDown();
     if (connected())
     {
         terminate();
@@ -70,7 +69,6 @@ void LineHandlerMulticast::stopService()
 void LineHandlerMulticast::handleReceiveData(const boost::system::error_code& error,
     size_t bytes_recvd)
 {
-	//static const string FUNC_NAME = "handleReceiveData2";
     if (!error && !mShuttingDown)
     {
         // TODO: Get the time as the first thing - boost date time
