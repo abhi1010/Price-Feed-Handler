@@ -16,11 +16,18 @@ class WimpQueue
 {
 public:
     WimpQueue()
+        : mShuttingDown     (false)
     {}
     virtual ~WimpQueue() {}
 
     virtual bool    push(T* data) = 0;
     virtual T*      pop(bool& success) = 0;
+    void    setShuttingDown()
+    {
+        mShuttingDown = true;
+    }
+protected:
+    bool        mShuttingDown;
 };
 
 
@@ -65,8 +72,9 @@ T*   QueueLockFree<T>::pop(bool& success)
 {
     //BLOG ( "QueueLockFree::Popping item.... "  );
     T * dd = new T;
-    while (!mQueue.pop(dd));
-    success = true;
+    while (!this->mShuttingDown && !mQueue.pop(dd));
+
+    success = !this->mShuttingDown && true;
     //BLOG ( "QueueLockFree::pop() : data= " << dd << ";value=" << *dd << "; found=" << success  );
     return dd;
 }

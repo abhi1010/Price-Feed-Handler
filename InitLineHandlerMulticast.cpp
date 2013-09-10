@@ -52,6 +52,7 @@ public:
         BLOG ("Init Module:: connected");
 
         addModule (mLineHandlerMc, "LineHandlerMulticast");
+        addModule (dynamic_cast<LineHandler*>(mLineHandlerMc), "LineHandler");
     }
 
     void destroy ()
@@ -64,7 +65,8 @@ public:
     	// Let's sleep for 1 sec maybe
     	struct timespec sleepTime, remTime;
 		sleepTime.tv_sec = 1;
-		BLOG ("Shutting down........ " );
+		BLOG ("initModuleLineHandlerMulticast:: Shutting down........ " );
+        std::cout << "initModuleLineHandlerMulticast:: Shutting down........ " << std::endl;
 		nanosleep (&sleepTime, &remTime);
 		BLOG ("initModuleLineHandlerMulticast:: Shutting down........ 4. " );
         delete mLineHandlerMc;

@@ -1,7 +1,7 @@
 #include "Log.h"
 #include <stdio.h>
 #include <stdarg.h>
-
+#include "Utils.h"
 #include <boost/log/utility/setup/console.hpp>
 
 
@@ -25,7 +25,9 @@ Log::Log()
 Log::~Log()
 {
 
-    std::cout << "LOG:: ~ called" << std::endl;
+
+    std::cout << "LOG:: ~ called. Sleeping for 3 seconds" << std::endl;
+    Utils::Sleep(0, 3);
     // Flush all buffered records
     mSink->stop();
     mSink->flush();

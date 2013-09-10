@@ -141,6 +141,8 @@ void LineHandlerMulticast::printDataDetails (LineData * lineData)
 
 void LineHandlerMulticast::terminate ()
 {
+	BLOG ("Terminating the socket");
+	mSocket.cancel();
     mSocket.close();
 }
 void LineHandlerMulticast::disconnect ()

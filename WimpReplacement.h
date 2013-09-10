@@ -70,7 +70,7 @@ public:
 
     virtual ~InterfacePublisher()
     {
-        mPublisher_threads.join_all();
+        //mPublisher_threads.join_all();
     }
     void publish(T* data)
     {
@@ -119,8 +119,8 @@ public:
     void startShutDown()
     {
     	BLOG ("InterfacePublisher:: Shutting down........ ");
+        mWimpQueue->setShuttingDown();
     	mShuttingDown = true;
-
     }
 public:
     void setWimpQueue           (WimpQueue<T>* wimpQueue)

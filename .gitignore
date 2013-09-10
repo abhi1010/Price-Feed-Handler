@@ -22,3 +22,10 @@
 *.log
 *.txt
 
+
+core
+*.swp
+
+
+
+.cproject

@@ -12,6 +12,7 @@
 #include <boost/thread/thread_only.hpp>
 //#include <boost/chrono/chrono_io.hpp>
 
+using namespace boost::local_time;
 
 class DateTime
 {
@@ -19,10 +20,10 @@ class DateTime
         DateTime();
         ~DateTime();
 
-        static boost::local_time::local_date_time             now();
-        boost::local_time::local_date_time             timeInTz (boost::local_time::local_date_time& timeInAnyTz,
-        boost::local_time::time_zone_ptr tzNew);
+        static local_date_time             now();
+        local_date_time             timeInTz (local_date_time& timeInAnyTz,
+        time_zone_ptr tzNew);
     protected:
-        static boost::local_time::tz_database                 mTzDb;
+        static tz_database                 mTzDb;
 };
 #endif

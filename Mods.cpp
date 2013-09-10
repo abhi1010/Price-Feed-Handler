@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #include "ConfigManager.h"
-//#include "Log.h"
+#include "Log.h"
 #include "Module.h"
 //#include "ModuleInitializer.h"
 #include "ModuleManager.h"
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
     while (keepRunning);
 
-    std::cout << "Time to destroy all modules" << std::endl;
+    BLOG ("Time to destroy all modules" );
 
     // initialize all objects
     ModuleManager::getInstance ().destroy();
