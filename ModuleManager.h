@@ -20,7 +20,6 @@ public:
 
 /**
  * ModuleManager is a statically allocated class for managing modules
- * in the PCAPI.
  *
  * Modules are given a weighting, which determines the order of their
  * initialization, with priority given to the lowest numbers.

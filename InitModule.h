@@ -13,11 +13,10 @@
 
 /**
  * The ModuleManager/InitModule sub-system is used for serialising the creation and
- * destruction of modules in the FHSDK.  A weight value is assigned to each InitModule
+ * destruction of modules.  A weight value is assigned to each InitModule
  * to specify the order of its construction/destruction relative to others.  For an
  * InitModule with a weight of 20, it will be initialisated before an InitModule with
- * a weight of 30, and vice-versa for destruction.  Only internal FHSDK InitModules
- * may have a weight below or equal-to 1000.  Please use a weight higher than this.
+ * a weight of 30, and vice-versa for destruction. 
  *
  * @defgroup ModuleManager
  */
